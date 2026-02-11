@@ -1,5 +1,6 @@
 import express,{ Request, Response } from "express";
 import authRoutes from "./routes/authRoutes";
+import transactionRoutes from "./routes/transactionRoutes";
 import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./config/database";
@@ -21,19 +22,28 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/transactions", transactionRoutes);
+
+
 
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`Health check: http://localhost:${PORT}/health`);
-    console.log(`Auth endpoints:`);
+    console.log(`\nAuth endpoints:`);
     console.log(`  - POST http://localhost:${PORT}/api/auth/signup`);
     console.log(`  - POST http://localhost:${PORT}/api/auth/login`);
+    console.log(`\nTransaction endpoints (require Authorization header with Bearer token):`);
+    console.log(`  - POST   http://localhost:${PORT}/api/transactions`);
+    console.log(`  - GET    http://localhost:${PORT}/api/transactions`);
+    console.log(`  - GET    http://localhost:${PORT}/api/transactions/:id`);
+    console.log(`  - PUT    http://localhost:${PORT}/api/transactions/:id`);
+    console.log(`  - DELETE http://localhost:${PORT}/api/transactions/:id`);
     
     // Test database connection
     try {
         await pool.query('SELECT NOW()');
-        console.log('Connected to PostgreSQL database');
+        console.log('\nConnected to PostgreSQL database ✅');
     } catch (error) {
         console.error('Failed to connect to PostgreSQL:', error);
     }
