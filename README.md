@@ -198,8 +198,7 @@ clarity-expense-tracker/
    - `JWT_SECRET` (manually added for security)
    - `PORT` (auto-assigned by Railway)
 
-**API URL:** https://clarity-expense-tracker-production-fe4f.up.railway.app/api  
-**Railway Project:** [View on Railway Dashboard](https://railway.com/project/c741de5e-8e1b-4037-ab5b-c432ca9bd0f7)
+**API URL:** https://clarity-expense-tracker-production-fe4f.up.railway.app/api
 
 ### Database (PostgreSQL on Railway)
 - Managed PostgreSQL database hosted on Railway
