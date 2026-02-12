@@ -5,7 +5,7 @@ A full-stack expense tracking application that helps users manage their finances
 ## 🚀 Live Demo
 
 **Frontend:** [https://clarity-expense-tracker-cyan.vercel.app](https://clarity-expense-tracker-cyan.vercel.app)  
-**Backend API:** [https://clarity-expense-tracker-production-fe4f.up.railway.app/api](https://clarity-expense-tracker-production-fe4f.up.railway.app/api)  
+**Backend API:** Backend Service Hosted on Railway
 **Database:** PostgreSQL hosted on Railway
 
 ## ✨ Features
