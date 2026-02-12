@@ -23,15 +23,18 @@ const Signup: React.FC = () => {
     setLoading(true);
     
     try {
+      console.log('Signing up with:', { username, email, password: '***' });
       const response = await authAPI.signup({ username, email, password });
+      console.log('Signup response:', response);
       
+      // Store token and user
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       
-      await login(email, password);
-      
-      navigate('/dashboard');
+      // Redirect to dashboard (page will reload and AuthContext will restore session)
+      window.location.href = '/dashboard';
     } catch (err: any) {
+      console.error('Signup error:', err);
       setError(err.response?.data?.error || 'Signup failed. Please try again.');
     } finally {
       setLoading(false);

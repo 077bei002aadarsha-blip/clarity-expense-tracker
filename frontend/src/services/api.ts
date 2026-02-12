@@ -69,15 +69,33 @@ apiClient.interceptors.request.use(
     }
 )
 
+// Response interceptor for better error logging
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        console.error('API Error:', {
+            url: error.config?.url,
+            method: error.config?.method,
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message
+        });
+        return Promise.reject(error);
+    }
+)
+
 
 export const authAPI = {
     signup: async (data: SignupData): Promise<AuthResponse> => {
         // Backend expects 'name' but frontend uses 'username'
-        const response = await apiClient.post('/auth/signup', {
+        const payload = {
             name: data.username,
             email: data.email,
             password: data.password
-        });
+        };
+        console.log('API - Sending signup request:', { ...payload, password: '***' });
+        const response = await apiClient.post('/auth/signup', payload);
+        console.log('API - Signup response:', response.data);
         return response.data;
     },
     login: async (data: LoginData): Promise<AuthResponse> => {
