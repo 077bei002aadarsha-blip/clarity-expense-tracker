@@ -9,6 +9,10 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved === 'true';
+  });
   
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -35,8 +39,29 @@ const Signup: React.FC = () => {
   };
   
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px' }}>
-      <h2>Sign Up for Clarity</h2>
+    <div style={{ backgroundColor: darkMode ? '#121212' : '#f5f5f5', minHeight: '100vh', padding: '20px' }}>
+      <div style={{ maxWidth: '400px', margin: '0 auto', padding: '30px', backgroundColor: darkMode ? '#1e1e1e' : '#fff', color: darkMode ? '#fff' : '#000', borderRadius: '12px', boxShadow: darkMode ? '0 4px 6px rgba(0,0,0,0.3)' : '0 4px 6px rgba(0,0,0,0.1)', marginTop: '50px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h2 style={{ margin: 0 }}>Sign Up for Clarity</h2>
+        <button
+          onClick={() => {
+            const newMode = !darkMode;
+            setDarkMode(newMode);
+            localStorage.setItem('darkMode', newMode.toString());
+          }}
+          style={{
+            padding: '6px 12px',
+            backgroundColor: darkMode ? '#ffd700' : '#333',
+            color: darkMode ? '#000' : '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '14px'
+          }}
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
+      </div>
       
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '15px' }}>
@@ -46,7 +71,7 @@ const Signup: React.FC = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px', fontSize: '14px' }}
+            style={{ width: '100%', padding: '8px', fontSize: '14px', backgroundColor: darkMode ? '#2d2d2d' : '#fff', color: darkMode ? '#fff' : '#000', border: `1px solid ${darkMode ? '#444' : '#ccc'}` }}
           />
         </div>
         
@@ -57,7 +82,7 @@ const Signup: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px', fontSize: '14px' }}
+            style={{ width: '100%', padding: '8px', fontSize: '14px', backgroundColor: darkMode ? '#2d2d2d' : '#fff', color: darkMode ? '#fff' : '#000', border: `1px solid ${darkMode ? '#444' : '#ccc'}` }}
           />
         </div>
         
@@ -69,7 +94,7 @@ const Signup: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            style={{ width: '100%', padding: '8px', fontSize: '14px' }}
+            style={{ width: '100%', padding: '8px', fontSize: '14px', backgroundColor: darkMode ? '#2d2d2d' : '#fff', color: darkMode ? '#fff' : '#000', border: `1px solid ${darkMode ? '#444' : '#ccc'}` }}
           />
         </div>
         
@@ -100,6 +125,7 @@ const Signup: React.FC = () => {
       <p style={{ marginTop: '20px', textAlign: 'center' }}>
         Already have an account? <Link to="/login">Login</Link>
       </p>
+      </div>
     </div>
   );
 };
