@@ -295,28 +295,6 @@ const Dashboard: React.FC = () => {
             />
           </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Date:</label>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              required
-              style={{ width: '100%', padding: '8px', backgroundColor: darkMode ? '#3a3a3a' : '#fff', color: colors.text, border: `1px solid ${colors.border}` }}
-            />
-          </div>
-
-          <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Description:</label>
-            <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Optional description"
-              style={{ width: '100%', padding: '8px', backgroundColor: darkMode ? '#3a3a3a' : '#fff', color: colors.text, border: `1px solid ${colors.border}` }}
-            />
-          </div>
-
           <div style={{ gridColumn: 'span 2', display: 'flex', gap: '10px' }}>
             <button
               type="submit"
