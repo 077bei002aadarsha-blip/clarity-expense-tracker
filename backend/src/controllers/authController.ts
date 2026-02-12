@@ -8,32 +8,40 @@ export const signup = async (req: Request, res: Response) => {
   try {
     const { email, password, name } = req.body;
 
+    console.log('Signup request received:', { email, name });
+
     // Validate input
     if (!email || !password || !name) {
+      console.log('Validation failed - missing fields');
       return res.status(400).json({ error: 'All fields are required' });
     }
 
     // Check if user already exists
+    console.log('Checking if user exists...');
     const existingUser = await pool.query(
       'SELECT * FROM users WHERE email = $1',
       [email]
     );
 
     if (existingUser.rows.length > 0) {
+      console.log('User already exists');
       return res.status(400).json({ error: 'Email already registered' });
     }
 
     // Hash password
+    console.log('Hashing password...');
     const saltRounds = 10;
     const password_hash = await bcrypt.hash(password, saltRounds);
 
     // Insert user into database
+    console.log('Inserting user into database...');
     const result = await pool.query(
       'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, created_at',
       [email, password_hash, name]
     );
 
     const newUser = result.rows[0];
+    console.log('User created successfully:', { id: newUser.id, email: newUser.email });
 
     // Generate JWT token
     const token = jwt.sign(
@@ -52,9 +60,17 @@ export const signup = async (req: Request, res: Response) => {
         name: newUser.name,
       },
     });
-  } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (error: any) {
+    console.error('Signup error details:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      stack: error.stack
+    });
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
   }
 };
 

@@ -26,29 +26,38 @@ app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 
 
-
-
-app.listen(PORT, async () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/health`);
-    console.log(`\nAuth endpoints:`);
-    console.log(`  - POST http://localhost:${PORT}/api/auth/signup`);
-    console.log(`  - POST http://localhost:${PORT}/api/auth/login`);
-    console.log(`\nTransaction endpoints (require Authorization header with Bearer token):`);
-    console.log(`  - POST   http://localhost:${PORT}/api/transactions`);
-    console.log(`  - GET    http://localhost:${PORT}/api/transactions`);
-    console.log(`  - GET    http://localhost:${PORT}/api/transactions/:id`);
-    console.log(`  - PUT    http://localhost:${PORT}/api/transactions/:id`);
-    console.log(`  - DELETE http://localhost:${PORT}/api/transactions/:id`);
-    
-    // Test database connection
+// Initialize database and start server
+const startServer = async () => {
     try {
+        // Test database connection
+        console.log('Testing database connection...');
         await pool.query('SELECT NOW()');
-        console.log('\nConnected to PostgreSQL database ✅');
+        console.log('✅ Connected to PostgreSQL database');
         
         // Initialize database tables
+        console.log('\n🔧 Initializing database tables...');
         await initializeDatabase();
+        console.log('✅ Database tables initialized successfully\n');
+        
+        // Start server
+        app.listen(PORT, () => {
+            console.log(`🚀 Server is running on port ${PORT}`);
+            console.log(`Health check: http://localhost:${PORT}/health`);
+            console.log(`\nAuth endpoints:`);
+            console.log(`  - POST http://localhost:${PORT}/api/auth/signup`);
+            console.log(`  - POST http://localhost:${PORT}/api/auth/login`);
+            console.log(`\nTransaction endpoints (require Authorization header with Bearer token):`);
+            console.log(`  - POST   http://localhost:${PORT}/api/transactions`);
+            console.log(`  - GET    http://localhost:${PORT}/api/transactions`);
+            console.log(`  - GET    http://localhost:${PORT}/api/transactions/:id`);
+            console.log(`  - PUT    http://localhost:${PORT}/api/transactions/:id`);
+            console.log(`  - DELETE http://localhost:${PORT}/api/transactions/:id`);
+        });
     } catch (error) {
-        console.error('Failed to connect to PostgreSQL:', error);
+        console.error('❌ Failed to start server:', error);
+        console.error('Error details:', error);
+        process.exit(1);
     }
-}); 
+};
+
+startServer(); 
