@@ -4,6 +4,7 @@ import transactionRoutes from "./routes/transactionRoutes";
 import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./config/database";
+import { initializeDatabase } from "./config/initDb";
 
 
 const app = express();
@@ -44,6 +45,9 @@ app.listen(PORT, async () => {
     try {
         await pool.query('SELECT NOW()');
         console.log('\nConnected to PostgreSQL database ✅');
+        
+        // Initialize database tables
+        await initializeDatabase();
     } catch (error) {
         console.error('Failed to connect to PostgreSQL:', error);
     }
