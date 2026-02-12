@@ -1,7 +1,4 @@
 import axios from 'axios';
-import dotenv, { config } from 'dotenv';        
-
-dotenv.config();
 
 //interface for the USER db table
 
@@ -91,9 +88,9 @@ export const transactionAPI = {
                   startDate?: string, 
                   endDate?: string}): Promise<Transaction[]> => {
 
-                    const response = await apiClient.get<Transaction[]>('/transactions', {params: filter});
+                    const response = await apiClient.get<{count: number, transactions: Transaction[]}>('/transactions', {params: filter});
 
-                    return response.data;
+                    return response.data.transactions;
                   },
 
     getById: async (id: number): Promise<Transaction> => {
@@ -102,13 +99,13 @@ export const transactionAPI = {
     },
 
     create: async (data: CreateTransactionData): Promise<Transaction> => {
-        const response = await apiClient.post<Transaction>('/transactions', data);
-        return response.data;
+        const response = await apiClient.post<{message: string, transaction: Transaction}>('/transactions', data);
+        return response.data.transaction;
     },
 
     update: async (id: number, data: Partial<CreateTransactionData>): Promise<Transaction> => {
-        const response = await apiClient.put<Transaction>(`/transactions/${id}`, data);
-        return response.data;
+        const response = await apiClient.put<{message: string, transaction: Transaction}>(`/transactions/${id}`, data);
+        return response.data.transaction;
     },
     delete: async (id: number): Promise<void> => {  
         const response = await apiClient.delete(`/transactions/${id}`);

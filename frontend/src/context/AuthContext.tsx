@@ -1,6 +1,6 @@
 import React, {createContext,useContext,useState,useEffect} from "react";
 
-import {User,AuthResponse,authAPI} from "../services/api";
+import {User,authAPI} from "../services/api";
 
 interface AuthContextType{
     user: User | null;
@@ -20,10 +20,18 @@ useEffect(()=>
 {
     const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
+    
+    console.log('AuthContext - Restoring session:', { savedToken: !!savedToken, savedUser });
 
     if(savedToken && savedUser){
         setToken(savedToken);
-        setUser(JSON.parse(savedUser));
+        try {
+            const parsedUser = JSON.parse(savedUser);
+            console.log('Parsed user:', parsedUser);
+            setUser(parsedUser);
+        } catch (error) {
+            console.error('Failed to parse user:', error);
+        }
     }
 },[]
 )
