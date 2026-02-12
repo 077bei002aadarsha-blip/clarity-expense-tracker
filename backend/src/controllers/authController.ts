@@ -6,10 +6,10 @@ import pool from '../config/database';
 // Signup - Create new user
 export const signup = async (req: Request, res: Response) => {
   try {
-    const { email, password, username } = req.body;
+    const { email, password, name } = req.body;
 
     // Validate input
-    if (!email || !password || !username) {
+    if (!email || !password || !name) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
@@ -29,8 +29,8 @@ export const signup = async (req: Request, res: Response) => {
 
     // Insert user into database
     const result = await pool.query(
-      'INSERT INTO users (email, password_hash, username) VALUES ($1, $2, $3) RETURNING id, email, username, created_at',
-      [email, password_hash, username]
+      'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, created_at',
+      [email, password_hash, name]
     );
 
     const newUser = result.rows[0];
@@ -49,7 +49,7 @@ export const signup = async (req: Request, res: Response) => {
       user: {
         id: newUser.id,
         email: newUser.email,
-        username: newUser.username,
+        name: newUser.name,
       },
     });
   } catch (error) {

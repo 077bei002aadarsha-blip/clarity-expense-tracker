@@ -1,0 +1,117 @@
+import axios from 'axios';
+import dotenv, { config } from 'dotenv';        
+
+dotenv.config();
+
+//interface for the USER db table
+
+export interface User{
+    id: number;
+    username: string;
+    email: string;
+}
+
+//export interface for the TRANSACTION db table
+export interface Transaction{
+    id: number;
+    user_id: number;
+    type: 'income' | 'expense';
+    amount: number;
+    category: string;
+    description?: string;
+    date: string; // ISO format date string
+}
+
+export interface SignupData{
+    username: string;
+    email: string;
+    password: string;
+}
+
+export interface LoginData{
+    email: string;
+    password: string;
+}
+
+export interface AuthResponse{
+    token: string;
+    user: User;
+}
+
+
+export interface CreateTransactionData{
+    type: 'income' | 'expense';
+    amount: number;
+    category: string;
+    description?: string;
+    date: string; 
+}
+
+
+const API_BASE_URL = 'https://clarity-expense-tracker-production-fe4f.up.railway.app/api';
+
+
+const apiClient = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+})
+
+apiClient.interceptors.request.use(
+    (config)=>{
+        const token = localStorage.getItem('token');
+        if(token){
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+         return config;
+    },
+    (error)=>
+    {
+        return Promise.reject(error);
+    }
+)
+
+
+export const authAPI = {
+    signup: async (data: SignupData): Promise<AuthResponse> => {
+        const response = await apiClient.post('/auth/signup', data);
+        return response.data;
+    },
+    login: async (data: LoginData): Promise<AuthResponse> => {
+        const response = await apiClient.post('/auth/login', data);
+        return response.data;
+    },
+};
+
+
+export const transactionAPI = {
+    getAll: async(filter?: {type?: 'income' | 'expense',
+                  category?: string, 
+                  startDate?: string, 
+                  endDate?: string}): Promise<Transaction[]> => {
+
+                    const response = await apiClient.get<Transaction[]>('/transactions', {params: filter});
+
+                    return response.data;
+                  },
+
+    getById: async (id: number): Promise<Transaction> => {
+        const response = await apiClient.get<Transaction>(`/transactions/${id}`);
+        return response.data;
+    },
+
+    create: async (data: CreateTransactionData): Promise<Transaction> => {
+        const response = await apiClient.post<Transaction>('/transactions', data);
+        return response.data;
+    },
+
+    update: async (id: number, data: Partial<CreateTransactionData>): Promise<Transaction> => {
+        const response = await apiClient.put<Transaction>(`/transactions/${id}`, data);
+        return response.data;
+    },
+    delete: async (id: number): Promise<void> => {  
+        const response = await apiClient.delete(`/transactions/${id}`);
+        return response.data;
+    }
+}
