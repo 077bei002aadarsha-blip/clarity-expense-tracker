@@ -4,9 +4,15 @@ export const initializeDatabase = async () => {
   try {
     console.log('Initializing database tables...');
 
-    // Create users table
+    // Drop existing tables to recreate with correct schema
+    console.log('Dropping existing tables if they exist...');
+    await pool.query('DROP TABLE IF EXISTS transactions CASCADE;');
+    await pool.query('DROP TABLE IF EXISTS users CASCADE;');
+    console.log('✓ Old tables dropped');
+
+    // Create users table with correct schema
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
+      CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
@@ -14,11 +20,11 @@ export const initializeDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log('✓ Users table ready');
+    console.log('✓ Users table created with correct schema');
 
     // Create transactions table
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS transactions (
+      CREATE TABLE transactions (
         id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         type VARCHAR(20) NOT NULL CHECK (type IN ('income', 'expense')),
@@ -30,20 +36,24 @@ export const initializeDatabase = async () => {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log('✓ Transactions table ready');
+    console.log('✓ Transactions table created');
 
     // Create indexes
     await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON transactions(user_id);
+      CREATE INDEX idx_transactions_user_id ON transactions(user_id);
     `);
     await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(date);
+      CREATE INDEX idx_transactions_date ON transactions(date);
     `);
-    console.log('✓ Database indexes ready');
+    console.log('✓ Database indexes created');
 
     console.log('✅ Database initialization complete!');
-  } catch (error) {
-    console.error('❌ Database initialization error:', error);
+  } catch (error: any) {
+    console.error('❌ Database initialization error:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail
+    });
     throw error;
   }
 };
