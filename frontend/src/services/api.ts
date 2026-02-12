@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export interface User{
     id: number;
-    username: string;
+    name: string;
     email: string;
 }
 
@@ -72,7 +72,12 @@ apiClient.interceptors.request.use(
 
 export const authAPI = {
     signup: async (data: SignupData): Promise<AuthResponse> => {
-        const response = await apiClient.post('/auth/signup', data);
+        // Backend expects 'name' but frontend uses 'username'
+        const response = await apiClient.post('/auth/signup', {
+            name: data.username,
+            email: data.email,
+            password: data.password
+        });
         return response.data;
     },
     login: async (data: LoginData): Promise<AuthResponse> => {

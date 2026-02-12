@@ -186,7 +186,7 @@ const Dashboard: React.FC = () => {
       <div style={{ maxWidth: '1200px', margin: '0 auto', color: colors.text }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-        <h1>Welcome, {user?.username}!</h1>
+        <h1>Welcome, {user?.name}!</h1>
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
             onClick={() => setDarkMode(!darkMode)}
